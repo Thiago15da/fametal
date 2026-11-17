@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="es-PY"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#192932">
+<meta name="description" content="Demostración interactiva de seguimiento de consultas, mediciones y presupuestos de aberturas.">
+<title>Fametal · Seguimiento de obras | Demo</title>
+<style>
+:root{font:15px system-ui,sans-serif;color:#203138;background:#eef1ef;--dark:#192932;--ink:#203138;--sub:#56666a;--line:#d9e2df;--white:#fcfdfc;--lime:#def195}
+*{box-sizing:border-box}body,h1,h2,h3,h4,p{margin:0}button,input,select,textarea{font:inherit}button{cursor:pointer}a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid #356a98;outline-offset:3px}[hidden]{display:none!important}
+.layout{display:grid;grid-template-columns:190px minmax(0,1fr);min-height:100vh;max-width:1650px;margin:auto}
+.side{height:100vh;position:sticky;top:0;display:flex;flex-direction:column;padding:25px 13px;background:#16242b;color:#e7eeed}
+.brand{display:flex;align-items:center;gap:10px;margin:3px 7px;font-size:20px;font-weight:830;letter-spacing:.035em}
+.brand small{font-size:10px;color:#a6b5b8}
+.mark{display:flex;gap:3px;align-items:start;width:23px;height:21px;transform:skewY(-14deg)}
+.mark i{background:var(--lime);width:5px;height:100%}.mark i:nth-child(2){height:73%}.mark i:nth-child(3){height:45%}
+.side p{margin:4px 7px;font-size:11px;color:#b4c6c5}
+.nav{display:grid;gap:5px;margin-top:35px}
+.nav button{background:transparent;border:1px solid transparent;color:#dce8e6;min-height:43px;text-align:left;padding:7px 10px;border-radius:8px;font-weight:650;font-size:13px}
+.nav button:hover,.nav button[aria-pressed=true]{background:#2a3e46;border-color:#3a5157}.nav b{display:inline-block;width:19px;color:var(--lime)}
+.side-foot{margin-top:auto;padding:11px 7px 0;border-top:1px solid #32464a;font-size:11px;color:#b4c6c5}
+.side-foot a{display:block;margin-bottom:8px}
+.side-foot button{background:none;color:#c9d9d6;border:0;padding:0;font-size:10px;text-decoration:underline}
+.main{min-width:0;padding:0 clamp(12px,2.6vw,40px)}
+.top{min-height:70px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.eyebrow{font-size:10px;letter-spacing:.14em;font-weight:820;text-transform:uppercase;color:#53696e}
+.top p+p{font-size:12px;color:var(--sub);margin-top:4px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid transparent;border-radius:7px;min-height:38px;padding:8px 11px;font-size:13px;font-weight:720;background:var(--dark);color:white}
+.btn:hover{background:#364f55}.btn.light{background:var(--white);border-color:var(--line);color:var(--ink)}.btn.light:hover{background:#e9efe8}.btn.lime{background:var(--lime);color:#26332b}.btn.lime:hover{background:#f2ffd1}
+.hero{min-height:264px;border-radius:12px;overflow:hidden;position:relative;isolation:isolate;display:grid;grid-template-columns:1.15fr .85fr;align-items:center;padding:23px clamp(20px,4vw,55px);background:linear-gradient(100deg,#1a2c34 25%,#2c4650);color:#f4f8f3}
+.hero::before{content:"";position:absolute;inset:0;z-index:-1;background-image:linear-gradient(#9dc0bd25 1px,transparent 1px),linear-gradient(90deg,#9dc0bd25 1px,transparent 1px);background-size:23px 23px;mask-image:linear-gradient(90deg,transparent 29%,black 80%)}
+.hero .eyebrow{color:#dceca6}
+h1{font-size:clamp(43px,5vw,76px);font-weight:730;line-height:.98;letter-spacing:-.066em;margin-top:7px}
+.hero p:nth-of-type(2){color:#dbe7e6;font-size:14px;line-height:1.55;max-width:47ch;margin:12px 0 15px}
+.drawing{width:min(100%,450px);justify-self:end;position:relative;color:#cadfb7;padding:12px 26px 0 0;font:10px ui-monospace,monospace}
+.draw-x{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:9px}.draw-x::before,.draw-x::after{content:"";flex:1;border-top:1px solid #94b5a8}
+.frame{border:4px double #9fc5bc;display:grid;grid-template-columns:repeat(4,1fr);height:130px;gap:4px;padding:4px;background:#20394360}
+.frame i{border:1px solid #83a7a4;position:relative;background:#7bb4b91a}
+.frame i::after{content:"";position:absolute;top:30%;left:25%;width:40%;height:8px;border-top:1px solid #c3ded774;border-bottom:1px solid #c3ded76a;transform:rotate(-45deg)}
+.draw-y{position:absolute;right:0;top:58%;writing-mode:vertical-rl}
+.metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;padding:12px 0 20px}
+.metric{display:grid;grid-template-columns:29px minmax(0,1fr) auto;gap:7px;padding:9px 10px;align-items:center;text-align:left;color:var(--ink);border:1px solid var(--line);border-radius:8px;background:var(--white)}
+.metric[aria-pressed=true],.metric:hover{background:#eaf2e1;border-color:#a0b38f}
+.metric b{display:grid;place-items:center;width:26px;height:26px;border-radius:6px;background:#e8efeb;color:#456357}
+.metric strong{display:block;font-size:23px;line-height:1.05}.metric small{display:block;color:var(--sub);font-size:11px;margin-top:3px}
+.work-head{display:flex;justify-content:space-between;align-items:center;gap:6px;margin:0 0 10px}
+.work-head h2{font-size:24px;letter-spacing:-.04em}
+.work-head p,.foot{font-size:11px;color:var(--sub);margin-top:4px}
+.badge{flex:none;border:1px solid #c8d7c3;color:#466044;background:#e8f0e4;border-radius:25px;padding:5px 8px;font-weight:720;font-size:10px}
+.work{display:grid;grid-template-columns:minmax(0,1.14fr) minmax(270px,.86fr);gap:11px;align-items:start}
+.list,.detail{background:var(--white);border:1px solid var(--line);border-radius:9px;min-width:0}
+.filters{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,135px);gap:7px;padding:8px}
+.filters input,.filters select,.fields input,.fields select,.fields textarea{width:100%;min-width:0;margin:0;padding:8px;border:1px solid #cbd6d2;background:var(--white);color:var(--ink);border-radius:5px;font-size:13px}
+.labels,.row{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,.93fr) minmax(0,.56fr);align-items:center;gap:5px;padding:8px 9px}
+.labels{font-size:10px;text-transform:uppercase;letter-spacing:.06em;background:#f0f5f2;color:#516668;font-weight:750}.labels span:last-child{text-align:right}
+.row{background:none;color:var(--ink);border:0;border-top:1px solid var(--line);width:100%;text-align:left;min-height:55px;font-size:13px}
+.row:hover,.row[aria-pressed=true]{background:#edf3e7}.row[aria-pressed=true]{box-shadow:inset 3px 0 #648653}
+.row strong{display:block;overflow-wrap:anywhere}.row small{display:block;font-size:10px;color:var(--sub);margin-top:4px}
+.phase{display:inline-flex;justify-self:start;align-items:center;gap:4px;border-radius:15px;background:#e8eeec;color:#46595f;font-size:10px;font-weight:740;padding:4px 6px;line-height:1.2}
+.phase::before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor}
+.visita{background:#e4eef6;color:#355e79}.cotizar{background:#f7edda;color:#865510}.enviado{background:#e5f0e4;color:#376145}
+.due,.owner{font-weight:650;color:#55686c;font-size:11px;text-align:right;justify-self:end}.due.late{color:#a33c35}
+.agenda,.labels.agenda{grid-template-columns:minmax(0,.65fr) minmax(0,1.27fr) minmax(0,.70fr)}
+.agenda .due{justify-self:start;text-align:left}
+.stage-group h3{padding:8px 9px;font-size:11px;background:#edf2ee;border-top:1px solid var(--line)}
+.detail{padding:12px 13px}
+.duo{display:flex;justify-content:space-between;gap:8px;align-items:start}
+.duo h3{font-size:23px;letter-spacing:-.044em;line-height:1.14;margin:4px 0;overflow-wrap:anywhere}
+.duo .btn{min-height:30px;font-size:10px;white-space:nowrap;padding:5px 8px}
+.meta,.notes,.empty{color:var(--sub);font-size:12px;line-height:1.4;overflow-wrap:anywhere}
+.progress{display:flex;gap:4px;margin:11px 0 8px}.progress i{flex:1;height:4px;border-radius:10px;background:#e0e7e2}.progress i.on{background:#6b8c58}
+.next{padding:9px;background:#edf4e9;border:1px solid #d6e3d1;border-radius:7px;margin-top:11px}
+.next h4,.detail h4{font-size:11px;font-weight:750;margin-bottom:5px}.next h4{text-transform:uppercase;letter-spacing:.05em;color:#456744}
+.next strong{font-size:13px;overflow-wrap:anywhere}
+.next .btn{display:flex;width:100%;justify-content:space-between;margin-top:8px;font-size:11px;min-height:32px}
+.spec{margin-top:11px}.notes{margin-top:4px}.sizes{font-size:12px;font-weight:680}
+.history{border-top:1px solid var(--line);margin-top:12px;padding:8px 0 0}.history p{font-size:11px;margin-bottom:4px;color:var(--sub)}
+.history strong{color:var(--ink)}.foot{padding:12px 0;line-height:1.4}.empty{padding:16px}
+dialog{border:1px solid var(--line);border-radius:10px;width:min(540px,calc(100% - 20px));max-height:90vh;padding:14px;color:var(--ink);background:var(--white)}
+dialog::backdrop{background:#17262fb0}.fields{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:11px 0}
+.fields label{min-width:0;font-size:11px;font-weight:720}.fields input,.fields select,.fields textarea{display:block;margin-top:4px;font-size:16px}.fields .wide{grid-column:1/-1}
+.form-foot{display:flex;gap:8px;justify-content:end}.error{font-size:11px;color:#a33c35;margin:4px 0}
+.toast{position:fixed;bottom:10px;right:10px;background:var(--dark);color:white;padding:9px;border-radius:6px;font-size:12px}
+@media(max-width:960px){.layout{grid-template-columns:1fr}.side{height:auto;z-index:2;flex-direction:row;align-items:center;justify-content:space-between;padding:6px 10px}.brand{font-size:17px}.side p,.side-foot{display:none}.nav{margin:0;display:flex;gap:2px}.nav button{min-height:34px;padding:4px 6px;font-size:11px}.work{grid-template-columns:1fr}.detail,#workbench{scroll-margin-top:56px}}
+@media(max-width:590px){.brand{font-size:14px;margin-inline:0;gap:4px}.brand small,.nav b,.drawing{display:none}.mark{width:16px;gap:2px;height:16px}.mark i{width:4px}.top{min-height:58px}.top .eyebrow{font-size:9px;letter-spacing:.06em}.top .btn{font-size:11px}.hero{grid-template-columns:1fr;min-height:218px;padding:17px}.hero p:nth-of-type(2){font-size:12px}.metric{grid-template-columns:1fr;padding:7px}.metric b,.metric>span:last-child{display:none}.metric small{font-size:10px}.work-head h2{font-size:20px}.filters{grid-template-columns:1fr 114px}.phase,.due,.owner,.row small{font-size:9px}.row{min-height:49px;font-size:12px}}
+</style></head>
+<body>
+<div class="layout">
+<aside class="side"><a class="brand" href="#" aria-label="Fametal, inicio"><span class="mark" aria-hidden="true"><i></i><i></i><i></i></span> FAMETAL <small>S.A.</small></a><p>Seguimiento comercial</p>
+<nav class="nav" aria-label="Vistas del panel"><button type="button" data-view="consultas" aria-pressed="true"><b aria-hidden="true">☷</b> Consultas</button><button type="button" data-view="agenda" aria-pressed="false"><b aria-hidden="true">▦</b> Agenda</button><button type="button" data-view="etapas" aria-pressed="false"><b aria-hidden="true">▤</b> Por etapa</button></nav>
+<div class="side-foot"><a href="https://fametal.com.py/" target="_blank" rel="noopener">Sitio de Fametal ↗</a><button type="button" id="reset">Restablecer demo</button></div></aside>
+<main class="main"><header class="top"><div><p class="eyebrow">Fametal S.A. / Seguimiento comercial</p><p id="today"></p></div><button class="btn" id="create" type="button">＋ Nueva consulta</button></header>
+<section class="hero"><div><p class="eyebrow">Propuesta de NovaTec</p><h1>De la consulta<br>al presupuesto.</h1><p>Consultas por obra, visitas de medición y presupuestos. Cada ficha muestra quién se encarga y qué sigue.</p><button type="button" class="btn lime" id="example">Probar con un caso ↘</button></div>
+<div class="drawing" aria-hidden="true"><div class="draw-x">2,40 m</div><div class="frame"><i></i><i></i><i></i><i></i></div><span class="draw-y">2,10 m</span></div></section>
+<section id="metrics" class="metrics" aria-label="Resumen de próximos pasos"></section>
+<section id="workbench" aria-labelledby="work-title"><div class="work-head"><div><h2 id="work-title"></h2><p id="work-note"></p></div><span class="badge">Datos ficticios</span></div>
+<div class="work"><div class="list"><div class="filters">
+<input type="search" id="search" aria-label="Buscar obra, cliente o ciudad" placeholder="Buscar obra, cliente o ciudad">
+<select id="filter" aria-label="Filtrar por etapa"><option value="">Todas las etapas</option></select></div><div id="results"></div></div>
+<aside class="detail" id="detail" aria-label="Ficha de la obra"></aside></div></section>
+<footer class="foot">Muestra visual de NovaTec · Los cambios de la demo se guardan en este navegador.</footer>
+</main></div>
+<dialog id="editor" aria-labelledby="editor-title"><form id="form"><div class="duo"><h3 id="editor-title"></h3><button type="button" class="btn light" id="close" aria-label="Cerrar">×</button></div><div class="fields" id="fields"></div><p class="error" id="error" role="alert"></p><div class="form-foot"><button type="button" id="cancel" class="btn light">Cancelar</button><button type="submit" id="submit" class="btn">Guardar</button></div></form></dialog>
+<p id="toast" role="status" class="toast" hidden></p><noscript>Activá JavaScript para usar la demostración.</noscript>
+<script>
+'use strict';
+
+const stages = {
+  consulta: ['Consulta', 'Agendar medición', 'Confirmar acceso y coordinar visita'],
+  visita: ['Medición agendada', 'Registrar medición', 'Visita de medición'],
+  cotizar: ['Para cotizar', 'Registrar presupuesto enviado', 'Preparar presupuesto'],
+  enviado: ['Presupuesto enviado', 'Programar seguimiento', 'Consultar decisión del cliente']
+};
+const products = ['Abertura corrediza', 'Puerta o frente vidriado', 'Divisoria de aluminio', 'Cerramiento de baño', 'Quiebrasol', 'Otro'];
+const storageKey = 'novatec-fametal-demo-v1';
+const today = new Intl.DateTimeFormat('sv-SE', {timeZone: 'America/Asuncion'}).format(new Date());
+const short = new Intl.DateTimeFormat('es-PY', {day: 'numeric', month: 'short', timeZone: 'UTC'});
+const long = new Intl.DateTimeFormat('es-PY', {weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC'});
+const num = new Intl.NumberFormat('es-PY', {maximumFractionDigits: 2});
+const $ = selector => document.querySelector(selector);
+
+function plus(days) {
+  const date = new Date(today + 'T12:00:00Z');
+  date.setUTCDate(date.getUTCDate() + days);
+  return date.toISOString().slice(0, 10);
+}
+
+function label(date, formatter = short) {
+  return formatter.format(new Date(date + 'T12:00:00Z'));
+}
+
+function sample() {
+  return [
+    {id:241, name:'Edificio Lapacho', city:'Asunción', client:'Estudio Norte', owner:'María Torres', product:'Divisoria de aluminio', stage:'cotizar', date:plus(-1), task:'Revisar y preparar presupuesto', notes:'Divisorias vidriadas para dos salas. Confirmar el color del perfil.', sizes:[[2,180,220]], history:[[plus(-2),'Medición registrada'],[plus(-4),'Consulta registrada']]},
+    {id:242, name:'Casa Jacarandá', city:'Luque', client:'Lucía Benítez', owner:'Diego Vera', product:'Abertura corrediza', stage:'visita', date:today, task:'Medir salida al patio', notes:'Revisar el nivel del piso y confirmar el color del perfil.', sizes:[], history:[[plus(-1),'Visita de medición agendada'],[plus(-2),'Consulta registrada']]},
+    {id:243, name:'Local Paseo Itá', city:'Fernando de la Mora', client:'Espacio Itá', owner:'Ana Ruiz', product:'Puerta o frente vidriado', stage:'consulta', date:today, task:'Confirmar acceso para medición', notes:'Pedir una foto de la entrada y confirmar quién recibe al técnico.', sizes:[], history:[[plus(-1),'Consulta registrada']]},
+    {id:244, name:'Oficinas Ceibo', city:'San Lorenzo', client:'Equipo Ceibo', owner:'María Torres', product:'Divisoria de aluminio', stage:'enviado', date:plus(2), task:'Consultar decisión del cliente', notes:'El cliente está revisando el presupuesto por sala.', sizes:[[3,140,210]], history:[[plus(-1),'Presupuesto enviado registrado'],[plus(-3),'Medición registrada']]},
+    {id:245, name:'Residencia Ñandutí', city:'Lambaré', client:'Marta Acosta', owner:'Diego Vera', product:'Cerramiento de baño', stage:'visita', date:plus(3), task:'Medir nicho del baño', notes:'Tomar las medidas sobre el revestimiento terminado.', sizes:[], history:[[today,'Visita de medición agendada']]},
+    {id:246, name:'Edificio Azahares', city:'Asunción', client:'Estudio Horizonte', owner:'Ana Ruiz', product:'Quiebrasol', stage:'cotizar', date:plus(4), task:'Preparar opciones de perfiles', notes:'Revisar el detalle de fachada con el equipo de obra.', sizes:[[4,105,190]], history:[[plus(-2),'Medición registrada']]}
+  ];
+}
+
+function restore() {
+  try {
+    const list = JSON.parse(localStorage.getItem(storageKey));
+    if (Array.isArray(list) && list.length) return list;
+  } catch {}
+  return sample();
+}
+
+function esc(value) {
+  return String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[char]);
+}
+
+const normalize = str => String(str).normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toLowerCase();
+const eligible = {
+  due: row => row.date < today,
+  visits: row => row.stage === 'visita' && row.date >= today && row.date <= plus(6),
+  quotes: row => row.stage === 'cotizar'
+};
+const getArea = items => items.reduce((sum,[qty,width,height]) => sum + qty * width * height / 10000, 0);
+const nextStage = {consulta:'visita', visita:'cotizar', cotizar:'enviado', enviado:'enviado'};
+
+let records = restore();
+let selected = 242;
+let view = 'consultas';
+let metric = '';
+let editMode = '';
+let popupTimer;
+const form = $('#form');
+const editor = $('#editor');
+const search = $('#search');
+const filter = $('#filter');
+const detail = $('#detail');
+
+const optionEntries = Object.entries(stages).map(([key, stage]) => [key, stage[0]]);
+for (const [key, name] of optionEntries) filter.add(new Option(name, key));
+const longToday = label(today, long);
+$('#today').textContent = longToday[0].toUpperCase() + longToday.slice(1);
+
+function showToast(message) {
+  const toast = $('#toast');
+  clearTimeout(popupTimer);
+  toast.textContent = message;
+  toast.hidden = false;
+  popupTimer = setTimeout(() => { toast.hidden = true; }, 3100);
+}
+
+function save(message) {
+  try {
+    localStorage.setItem(storageKey, JSON.stringify(records));
+    showToast(message);
+  } catch {
+    showToast(message + ' El cambio se conserva durante esta sesión.');
+  }
+}
+
+function rowsForView() {
+  const term = normalize(search.value);
+  return records.filter(row =>
+    (!filter.value || filter.value === row.stage) &&
+    (!metric || eligible[metric](row)) &&
+    (!term || normalize([row.name,row.city,row.client,row.owner,'FM-' + row.id].join(' ')).includes(term))
+  ).sort((a,b) => a.date.localeCompare(b.date) || a.id - b.id);
+}
+
+function due(date) {
+  const late = date < today;
+  return '<span class="due' + (late ? ' late' : '') + '">' +
+    (late ? 'Vencido · ' : '') + (date === today ? 'Hoy' : label(date)) + '</span>';
+}
+
+function stageTag(row) {
+  return '<span class="phase '+ row.stage + '">' + stages[row.stage][0] + '</span>';
+}
+
+function titleLine(name, caption) {
+  return '<span><strong>' + esc(name) + '</strong><small>' + esc(caption) + '</small></span>';
+}
+
+function rowButton(row) {
+  const agenda = view === 'agenda';
+  const body = agenda
+    ? due(row.date) + titleLine(row.task,row.name + ' · ' + row.city) + '<span class="owner">' + esc(row.owner) + '</span>'
+    : titleLine(row.name,'FM-' + row.id + ' · ' + row.city) + stageTag(row) + due(row.date);
+  return '<button class="row ' + (agenda ? 'agenda' : '') + '" type="button" data-id="' + row.id + '" aria-pressed="' + (row.id === selected) + '">' + body + '</button>';
+}
+
+function paintDetail(row) {
+  if (!row) {
+    detail.innerHTML = '<p class="empty">Acá se muestra la ficha de la obra seleccionada.</p>';
+    return;
+  }
+  const area = getArea(row.sizes);
+  const measures = row.sizes.map(([qty,width,height]) => qty + ' un. · ' + num.format(width) + ' × ' + num.format(height) + ' cm').join('<br>');
+  const stageKeys = Object.keys(stages);
+  detail.innerHTML =
+    '<div class="duo"><div><p class="eyebrow">FM-' + row.id + ' · ' + esc(row.city) + '</p><h3 tabindex="-1" id="detail-title">' + esc(row.name) + '</h3></div><button type="button" class="btn light" data-action="edit">Editar ficha</button></div>' +
+    '<p class="meta">' + esc(row.client) + ' · ' + esc(row.product) + '</p><div class="progress" aria-hidden="true">' +
+    stageKeys.map((key,index) => '<i class="' + (index <= stageKeys.indexOf(row.stage) ? 'on' : '') +'"></i>').join('') + '</div>' +
+    '<div class="duo">' + stageTag(row) + '<span class="owner">Responsable · ' + esc(row.owner) + '</span></div>' +
+    '<div class="next"><h4>Próximo paso</h4><div class="duo"><strong>' + esc(row.task) + '</strong>' + due(row.date) + '</div>' +
+    '<button type="button" class="btn" data-action="advance">' + stages[row.stage][1] + '<span aria-hidden="true">→</span></button></div>' +
+    '<div class="spec"><h4>Ficha de medidas</h4><p class="sizes">' + (measures ? measures + '<br>' + num.format(area) + ' m² aprox.' : 'Medidas pendientes de la visita.') + '</p>' +
+    (row.notes ? '<p class="notes">' + esc(row.notes) + '</p>' : '') + '</div>' +
+    '<div class="history"><h4>Última actividad</h4>' + row.history.slice(0,4).map(([date, note]) => '<p><time datetime="' + date + '">' + label(date) + '</time> · <strong>' + esc(note) + '</strong></p>').join('') + '</div>';
+}
+
+function paint() {
+  const stats = [['due','Pasos vencidos','!'],['visits','Visitas · próximos 7 días','▦'],['quotes','Presupuestos por preparar','▤']];
+  $('#metrics').innerHTML = stats.map(([key,name,icon]) => '<button class="metric" type="button" data-metric="' + key + '" aria-pressed="' + (metric === key) + '"><b aria-hidden="true">' + icon + '</b><span><strong>' + records.filter(eligible[key]).length + '</strong><small>' + name + '</small></span><span aria-hidden="true">↗</span></button>').join('');
+  const rows = rowsForView();
+  if (!rows.some(row => row.id === selected)) selected = rows[0]?.id ?? null;
+  const titles = {
+    consultas:['Consultas por obra','Elegí una obra para ver su ficha y el siguiente paso.'],
+    agenda:['Agenda de próximos pasos','Visitas, presupuestos y seguimientos ordenados por fecha.'],
+    etapas:['Obras por etapa','Abrí una obra para ver quién se encarga y qué falta.']
+  };
+  $('#work-title').textContent = titles[view][0];
+  $('#work-note').textContent = titles[view][1];
+  const result = $('#results');
+  if (!rows.length) {
+    result.innerHTML = '<div class="empty">Sin resultados. <button type="button" class="btn light" data-action="clear">Limpiar filtros</button></div>';
+  } else if (view === 'etapas') {
+    result.innerHTML = Object.entries(stages).map(([key, stage]) => {
+      const group = rows.filter(row => row.stage === key);
+      return '<section class="stage-group"><h3>' + stage[0] + ' · ' + group.length + '</h3>' + group.map(rowButton).join('') + '</section>';
+    }).join('');
+  } else {
+    result.innerHTML = (view === 'agenda'
+      ? '<div class="labels agenda"><span>Fecha</span><span>Próximo paso</span><span>Responsable</span></div>'
+      : '<div class="labels"><span>Obra</span><span>Etapa</span><span>Vence</span></div>') + rows.map(rowButton).join('');
+  }
+  for (const button of document.querySelectorAll('[data-view]')) button.setAttribute('aria-pressed', String(button.dataset.view === view));
+  paintDetail(rows.find(row => row.id === selected));
+}
+
+function clear() { metric = ''; search.value = ''; filter.value = ''; }
+
+function focusDetail() {
+  if (matchMedia('(max-width: 960px)').matches) detail.scrollIntoView({block:'start'});
+  $('#detail-title')?.focus({preventScroll:true});
+}
+
+function field(caption, name, value = '', attrs = 'required maxlength="65"') {
+  return '<label>' + caption + '<input name="' + name + '" value="' + esc(value) + '" ' + attrs + '></label>';
+}
+
+function select(caption, name, options, value) {
+  return '<label>' + caption + '<select name="' + name + '">' +
+    options.map(([key, name]) => '<option value="' + esc(key) + '"' + (key === value ? ' selected' : '') + '>' + esc(name) + '</option>').join('') + '</select></label>';
+}
+
+function openEditor(mode) {
+  editMode = mode;
+  $('#error').textContent = '';
+  const row = records.find(row => row.id === selected);
+  const date = 'type="date" required';
+  let heading, fields;
+  if (mode === 'new' || mode === 'edit') {
+    const item = mode === 'edit' ? row : {};
+    heading = mode === 'new' ? 'Nueva consulta' : 'Editar ficha';
+    fields = field('Nombre de la obra','name',item.name) + field('Cliente','client',item.client)
+      + field('Ciudad','city',item.city) + select('Producto','product',products.map(name => [name,name]),item.product)
+      + field('Responsable','owner',item.owner) + select('Etapa','stage',optionEntries,item.stage)
+      + field('Próximo paso','task',item.task || stages.consulta[2]) + field('Fecha del próximo paso','date',item.date || today,date)
+      + '<label class="wide">Notas<textarea name="notes" rows="2" maxlength="260">' + esc(item.notes) + '</textarea></label>';
+  } else if (mode === 'reset') {
+    heading = 'Restablecer la demo';
+    fields = '<p class="wide">Se borrarán los cambios de este navegador y volverán las obras ficticias originales.</p>';
+  } else {
+    heading = stages[row.stage][1];
+    const next = nextStage[row.stage];
+    fields = row.stage === 'visita' ? field('Ancho en cm','width','','type="number" step="0.01" min="1" max="10000" required placeholder="240"')
+      + field('Alto en cm','height','','type="number" step="0.01" min="1" max="10000" required placeholder="210"')
+      + field('Unidades con esta medida','qty','1','type="number" min="1" max="999" required') : '';
+    const nextDate = row.stage === 'consulta' ? 'Fecha de la visita' : row.stage === 'visita' ? 'Fecha para preparar presupuesto' : 'Fecha del próximo contacto';
+    fields += field(nextDate,'date',plus(next === 'enviado' ? 2 : 1),date)
+      + field('Responsable','owner',row.owner) + field('Próximo paso','task',stages[next][2]);
+  }
+  $('#editor-title').textContent = heading;
+  $('#fields').innerHTML = fields;
+  $('#submit').textContent = mode === 'reset' ? 'Restablecer datos' : mode === 'new' ? 'Crear consulta' : 'Guardar';
+  editor.showModal();
+}
+
+form.addEventListener('submit', event => {
+  event.preventDefault();
+  let message = 'Ficha actualizada.';
+  if (editMode === 'reset') {
+    records = sample(); selected = 242; view = 'consultas';
+    message = 'Datos de ejemplo restablecidos.';
+  } else {
+    const data = Object.fromEntries([...new FormData(form)].map(([key, value]) => [key,value.trim()]));
+    if (Object.entries(data).some(([key,value]) => key !== 'notes' && !value)) {
+      $('#error').textContent = 'Completá los campos requeridos.';
+      return;
+    }
+    const row = records.find(row => row.id === selected);
+    if (editMode === 'new') {
+      selected = Math.max(...records.map(row => row.id)) + 1;
+      records.push({...data, id:selected, sizes:[], history:[[today,'Consulta registrada']]});
+      view = 'consultas';
+      message = 'Consulta creada.';
+    } else if (editMode === 'edit') {
+      Object.assign(row,data);
+      row.history.unshift([today,'Ficha actualizada']);
+    } else {
+      const previous = row.stage;
+      Object.assign(row, {stage:nextStage[previous], date:data.date, owner:data.owner, task:data.task});
+      if (previous === 'visita') row.sizes.push([Number(data.qty),Number(data.width),Number(data.height)]);
+      row.history.unshift([today, {consulta:'Visita agendada', visita:'Medición registrada', cotizar:'Presupuesto enviado registrado', enviado:'Seguimiento programado'}[previous]]);
+    }
+  }
+  clear(); editor.close(); save(message); paint();
+  if (editMode !== 'reset') focusDetail();
+});
+
+document.addEventListener('click', event => {
+  const button = event.target.closest('button');
+  if (!button) return;
+  if (button.dataset.id) {selected = Number(button.dataset.id); paint(); focusDetail();}
+  if (button.dataset.view) {view = button.dataset.view; paint(); $('#workbench').scrollIntoView({block:'start'});}
+  if (button.dataset.metric) {const key = button.dataset.metric; const old = metric; clear(); metric = key === old ? '' : key; paint(); $('#workbench').scrollIntoView({block:'start'}); search.focus({preventScroll:true});}
+  if (button.dataset.action === 'clear') {clear(); paint(); search.focus();}
+  if (button.dataset.action === 'edit' || button.dataset.action === 'advance') openEditor(button.dataset.action);
+});
+
+search.addEventListener('input',paint);
+filter.addEventListener('change',paint);
+$('#create').addEventListener('click',() => openEditor('new'));
+$('#reset').addEventListener('click',() => openEditor('reset'));
+$('#close').addEventListener('click',() => editor.close());
+$('#cancel').addEventListener('click',() => editor.close());
+$('#example').addEventListener('click',() => {
+  clear(); selected = 242; view = 'consultas'; paint();
+  $('#workbench').scrollIntoView({block:'start'});
+  $('#detail-title')?.focus({preventScroll:true});
+});
+paint();
+</script></body></html>
